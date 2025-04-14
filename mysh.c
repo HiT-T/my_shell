@@ -39,6 +39,13 @@ void runExternal(char **, char *, char *);
 void expandWildcard(const char *, char **, int *);
 bool matchPattern(const char *, const char *);
 
+// Initialize input buffer
+void initLine(lines_t *l, int fd) {
+    l->fd = fd;
+    l->len = 0;
+    l->pos = 0;
+}
+
 int main(int argc, char **argv) {
     // Reject more than one argument (unless input is not from terminal)
     if (argc > 2 || (!isatty(0) && argc == 2)) {
@@ -67,13 +74,6 @@ int main(int argc, char **argv) {
     }
     goodbye();
     return 0;
-}
-
-// Initialize input buffer
-void initLine(lines_t *l, int fd) {
-    l->fd = fd;
-    l->len = 0;
-    l->pos = 0;
 }
 
 // Read one line of input using low-level read()
