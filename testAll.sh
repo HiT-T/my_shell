@@ -1,6 +1,3 @@
-#!/bin/bash
-# testAll.sh
-
 echo "--- RUNNING TEST1.SH ---"
 ./mysh test1.sh
 echo

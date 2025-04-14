@@ -1,0 +1,11 @@
+Makefile
+README.md
+input.txt
+mysh
+mysh.c
+mysh.o
+out.txt
+test1.sh
+test2.sh
+test3.sh
+testAll.sh
