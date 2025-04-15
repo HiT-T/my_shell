@@ -4,13 +4,13 @@ echo "Running 'echo' and 'pwd':"
 echo "Hello from test1.sh"
 pwd
 
-echo "Attempting to 'cd subdir'..."
-cd subdir
+echo "Attempting to 'cd dir-DNE'..."
+cd dir-DNE
 pwd
 
 echo "Which command for 'ls':"
 which ls
 
-echo "The next line won't run if exit works properly."
+echo "There won't be a next line if exit works properly."
 exit
 echo "If you see this line, 'exit' didn't stop the script."

@@ -25,7 +25,6 @@ typedef struct {
 // Global flags
 bool is_interactive;          // True if running interactively
 int last_status = -1;         // Stores status of last command
-int is_non_terminal = -1;     // True if input is not from terminal
 
 // Function declarations
 char *readLine(lines_t *);
@@ -48,12 +47,11 @@ void initLine(lines_t *l, int fd) {
 
 int main(int argc, char **argv) {
     // Reject more than one argument (unless input is not from terminal)
-    if (argc > 2 || (!isatty(0) && argc == 2)) {
+    if (argc > 2) {
         fprintf(stderr, "mysh: cannot hold more than one arguments\n");
         exit(EXIT_SUCCESS);
     }
 
-    is_non_terminal = !isatty(0);                 // Determine input mode
     int fd = 0;
     is_interactive = (isatty(0) && argc == 1);    // Set interactive mode
     if (argc == 2) {
@@ -179,7 +177,6 @@ void parseAndExecute(char *line) {
         // First command in pipeline
         pid_t p1 = fork();
         if (p1 == 0) {
-            if (is_non_terminal) close(0);
             dup2(pipefd[1], STDOUT_FILENO);
             close(pipefd[0]); close(pipefd[1]);
             if (isBuiltIn(args[0])) runBuiltIn(args, infile, NULL);
@@ -253,6 +250,7 @@ void runBuiltIn(char **args, char *infile, char *outfile) {
                 return;
             }
         }
+        fprintf(stderr, "which: command not found\n");
         last_status = 1;
     }
 }
@@ -261,13 +259,12 @@ void runBuiltIn(char **args, char *infile, char *outfile) {
 void runExternal(char **args, char *infile, char *outfile) {
     pid_t pid = fork();
     if (pid == 0) {
-        if (is_non_terminal && infile == NULL) { close(STDIN_FILENO); }
-
         if (infile) {
             int fd = open(infile, O_RDONLY);
             if (fd < 0) { perror("input"); exit(1); }
             dup2(fd, STDIN_FILENO); close(fd);
         }
+
         if (outfile) {
             int fd = open(outfile, O_CREAT | O_WRONLY | O_TRUNC, 0640);
             if (fd < 0) { perror("output"); exit(1); }

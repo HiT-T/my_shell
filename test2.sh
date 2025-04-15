@@ -1,7 +1,7 @@
 echo "===== Test 2: Redirection & Pipes ====="
 
 echo "Reading from input.txt and piping to 'grep':"
-cat < input.txt | grep "pattern"
+cat input.txt | grep pattern
 
 echo "Listing files to out.txt..."
 ls > out.txt
